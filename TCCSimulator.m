@@ -71,13 +71,14 @@ title('QPSK Generated Signal (Normalized)')
 %
 % $$ TF_{BW}(f) = \exp(-\log(\sqrt{2})(\frac{f}{0.75*2})^2) $$
 %
+
+figure,
+subplot(211),plot(time,Signal_I)
+title('Signal I'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
+subplot(212),plot(time,Signal_Q)
+title('Signal Q'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
+
 if false
-    figure,
-    subplot(211),plot(time,Signal_I)
-    title('Signal I'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
-    subplot(212),plot(time,Signal_Q)
-    title('Signal Q'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
-    
     paramRF.SampleRate = SampleRate/4;
     paramRF.BW = 0.75*SymbolRate;
     paramRF.freq_central = 0;
@@ -110,12 +111,15 @@ end
 f_I = 2e3; % 2 kHz
 f_Q = 3e3; % 3 kHz
 f_P = 0e3; % no tone applied
+
 theta_I = 0; % initial tone phase
 theta_Q = 0;
 theta_P = 0;
-Vpp_I = 0.1; % tone amplitude (peak-to-peak)
-Vpp_Q = 0.1;
+
+Vpp_I = 0.2; % tone amplitude (peak-to-peak)
+Vpp_Q = 0.2;
 Vpp_P = 0.0;
+
 tone.I = (Vpp_I/2)*Vpi.I*cos(2*pi*f_I*time + theta_I); % signal
 tone.Q = (Vpp_Q/2)*Vpi.Q*cos(2*pi*f_Q*time + theta_Q);
 tone.P = (Vpp_P/2)*Vpi.P*cos(2*pi*f_P*time + theta_P);
@@ -316,7 +320,7 @@ Spectrum_PD_Signal = abs(fftshift(fft(PD_Signal)));
 
 figure,plot(time,PD_Signal)
 figure,plot(frequency,10*log10(Spectrum_PD_Signal),'k')
-title('Heater Transfer Function'), axis([0 5e4 -60 Inf])
+title('Heater Transfer Function'), axis([0 2e4 -60 Inf])
 
 %%
 paramFilt.SampleRate = SampleRate;
@@ -349,6 +353,6 @@ figure,plot(frequency,10*log10(Spectrum_FilteredToneQ),'k')
 title('Spectrum of the Filtered Pilot tone Q'), axis([0 1e4 -60 Inf])
 
 %% SWEEP
-% 
-% 
-% 
+%
+%
+%
