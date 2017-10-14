@@ -182,68 +182,39 @@ E_OUT_Q = mzm1(E_IN, RF.Q, tone.Q, bias.Q, Vpi.Q);
 E_OUT_IQ = E_OUT_I + quad(E_OUT_Q, bias.P);
 
 figure('Position',[618 412 300 280]),
-plot(E_OUT_IQ, 'o'), xlabel('Real part'), ylabel('Imaginary part')
-title('QPSK Optical Signal - Model 1')
+plot(E_OUT_IQ, '.'), xlabel('Real part'), ylabel('Imaginary part')
+title('QPSK Optical Signal - Model 1'), axis([-1.5 1.5 -1.5 1.5])
 
-%%
+%% Extinction Ratio
+figure('Position',[488 342 560 280]),
+ER_I = 10^( 10 /10); % Low Extinction Ratio
+E_OUT_I = mzm2(E_IN, RF.I, tone.I, bias.I, Vpi.I, ER_I);
+subplot(121)
+plot(E_OUT_I, 'o'), ylim([-0.2 0.2])
+title('Lower Extinction Ratio'), ylabel('Polarization phase'), xlabel('E field magnitude')
+legend('ER = 10 dB')
 
-% %% Extinction Ratio
-% figure('Position',[488 342 560 280]),
-% ER_I = 10^( 10 /10); % Low Extinction Ratio
-% E_OUT_I = mzm2(E_IN, RF.I, tone.I, bias.I, Vpi.I, ER_I);
-% subplot(121)
-% plot(E_OUT_I, 'o'), ylim([-0.2 0.2])
-% title('Lower Extinction Ratio'), ylabel('Polarization phase'), xlabel('E field magnitude')
-% legend('ER = 10 dB')
-% 
-% ER_I = 10^( 30 /10); % Extinction Ratio, Typ: 30 dB, higher is better
-% E_OUT_I = mzm2(E_IN, RF.I, tone.I, bias.I, Vpi.I, ER_I);
-% subplot(122)
-% plot(E_OUT_I, 'o'), ylim([-0.2 0.2])
-% title('Higher Extinction Ratio'), ylabel('Polarization phase'), xlabel('E field magnitude')
-% legend('ER = 30 dB')
-% 
-% %% QPSK Modulation, Model 2
-% ER_I = 10^( 20 /10); % Extinction Ratio, Typ: 30 dB, higher is better
-% ER_Q = 10^( 20 /10); %                   Min: 20 dB
-% 
-% E_OUT_I = mzm2(E_IN, RF.I, tone.I, bias.I, Vpi.I, ER_I);
-% E_OUT_Q = mzm2(E_IN, RF.Q, tone.Q, bias.Q, Vpi.Q, ER_Q);
-% 
-% bias.P = 0.5 * Vpi.P; % Optimum phase point
-% E_OUT_IQ = E_OUT_I + quad(E_OUT_Q, bias.P);
-% 
-% figure('Position',[488 342 300 280]),
-% plot(E_OUT_IQ, '.'), xlabel('Real part'), ylabel('Imaginary part')
-% title('QPSK Optical Signal - Model 2')
+ER_I = 10^( 30 /10); % Extinction Ratio, Typ: 30 dB, higher is better
+E_OUT_I = mzm2(E_IN, RF.I, tone.I, bias.I, Vpi.I, ER_I);
+subplot(122)
+plot(E_OUT_I, 'o'), ylim([-0.2 0.2])
+title('Higher Extinction Ratio'), ylabel('Polarization phase'), xlabel('E field magnitude')
+legend('ER = 30 dB')
 
-%% 
+%% QPSK Modulation, Model 2
+ER_I = 10^( 20 /10); % Extinction Ratio, Typ: 30 dB, higher is better
+ER_Q = 10^( 20 /10); %                   Min: 20 dB
 
-% %% QPSK Modulation, Model 3
-% E_OUT_I = mzm3(E_IN, RF.I, tone.I, bias.I, Vpi.I);
-% E_OUT_Q = mzm3(E_IN, RF.Q, tone.Q, bias.Q, Vpi.Q);
+E_OUT_I = mzm2(E_IN, RF.I, tone.I, bias.I, Vpi.I, ER_I);
+E_OUT_Q = mzm2(E_IN, RF.Q, tone.Q, bias.Q, Vpi.Q, ER_Q);
 
-% %% QPSK Modulation, Model 4
-% E_OUT_I = mzm4(E_IN, RF.I, tone.I, bias.I, Vpi.I, ER_I);
-% E_OUT_Q = mzm4(E_IN, RF.Q, tone.Q, bias.Q, Vpi.Q, ER_Q);
-% 
-% figure,
-% plot(E_OUT_I,E_OUT_Q, 'o')
-% title('Modulated Signal')
+bias.P = 0.5 * Vpi.P; % Optimum phase point
+E_OUT_IQ = E_OUT_I + quad(E_OUT_Q, bias.P);
 
-% E_OUT_IQ = E_OUT_I + quad(E_OUT_Q);
-% 
-% figure,
-% plot(time, real(E_OUT_IQ)), xlabel('Samples')
-% title('Transmitted I Optical Signal - Model 4')
-% 
-% figure,
-% plot(time, imag(E_OUT_IQ)), xlabel('Samples')
-% title('Transmitted Q Optical Signal - Model 4')
-
-% figure,
-% plot(E_OUT_IQ, 'o'), xlabel('Real part'), ylabel('Imaginary part')
-% title('QPSK Optical Signal - Model 4')
+figure('Position',[618 412 300 280]),
+plot(E_OUT_IQ, '.'), xlabel('Real part'), ylabel('Imaginary part')
+title('QPSK Optical Signal - Model 2')
+axis([-1.5 1.5 -1.5 1.5])
 
 %%
 
