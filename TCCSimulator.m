@@ -11,16 +11,12 @@
 close all; clear all;
 
 %% IQ Modulator Parameters
-Vpi.I = 3;              % Half-wave voltage, Typ: 3.75 Vpp
-Vpi.Q = 3;
-Vpi.P = 3;
+Vpi.I = 3.75;              % Half-wave voltage, Typ: 3.75 Vpp
+Vpi.Q = 3.75;
+Vpi.P = 3.75;
 IL = 0;                 % Insertion Loss,  Typ: 8.5 dB
 ER_I = 10^( 30 /10);    % Extinction Ratio, Typ: 30 dB
 ER_Q = 10^( 30 /10);
-
-% Sweep ----------> move to the right place
-SweepPts = 300;
-SweepRangeMax = 3*Vpi.I;
 
 % Signal parameters
 SymbolRate = 1e6;                           % 1 MHz
@@ -77,6 +73,7 @@ title('QPSK Generated Signal (Normalized)')
 %
 % $$ TF_{BW}(f) = \exp(-\log(\sqrt{2})(\frac{f}{0.75*2})^2) $$
 %
+% (Not used)
 if false
     paramRF.SampleRate = SampleRate/4;
     paramRF.BW = 0.75*SymbolRate;
@@ -290,22 +287,6 @@ PD.R = 0.95;     % Responsivity
 PD_Power = PD.R*abs(E_OUT_IQ).^2;
 PD_Noise_floor = PD.Var*randn(size(E_OUT_IQ));
 
-% figure,plot(frequency, 10*log10(abs(fftshift(fft(PD_Noise_floor)))))
-% title('PD Noise Floor'), ylabel('Noise Power Spectral Density'), xlabel('Frequency')
-
-% PD_Signal = E_OUT_IQ;           % TEST 1: Entry Signal
-PD_Signal = PD_Power;           % TEST 2: Average Power
-% PD_Signal = PD_Noise_floor;     % TEST 3: Noise
-% PD_Signal = PD_Power + PD_Noise_floor; % Photodetector Signal
-PD_Spectrum = abs(fftshift(fft(PD_Signal)));
-
-% figure, plot(time, 10*log10(PD_Signal)), xlabel('Samples')
-% title('Photodectector Received Signal')
-
-figure,plot(frequency, 10*log10(PD_Spectrum),'r')
-xlabel('Frequency'), ylabel('Power Spectral Density')
-title('Spectrum of Photodectector Received Signal'), axis([0 1e4 -10 inf])
-
 %% Heater Transfer Function
 paramFilt.SampleRate = SampleRate;
 paramFilt.BW = 1e4;
@@ -313,8 +294,7 @@ paramFilt.freq_central = 0;
 paramFilt.order = 1;
 paramFilt.gain = 1;
 paramFilt.plot_flag = false;
-
-PD_Signal = custom_filter(PD_Signal, paramFilt) + PD_Noise_floor;
+PD_Signal = custom_filter(PD_Power, paramFilt) + PD_Noise_floor;
 Spectrum_PD_Signal = abs(fftshift(fft(PD_Signal)));
 figure('Position',[384 442 800 320]),
 subplot(121),plot(time,PD_Signal)
@@ -324,9 +304,10 @@ title('Photodectector Received Signal'), axis([0 2e4 -60 Inf])
 xlabel('Frequency'), ylabel('Power Spectral Density')
 
 %% Pilot Tone Filters
+% Ideal case, where all the Bias points are optimized.
 plot_pilot_tones
 
 %% SWEEP
 %
-%
-%
+SweepPts = 300;
+SweepRangeMax = 3*Vpi.I;
