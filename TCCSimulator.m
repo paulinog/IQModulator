@@ -282,7 +282,7 @@ axis([-1.5 1.5 -1.5 1.5])
 % end
 
 %% Photodetector - Average optical power
-PD.Var = 10^(-90/10); % -90 dB of Noise floor
+PD.Var = 10^(-50/10); % -90 dB of Noise floor
 PD.R = 0.95;     % Responsivity
 PD_Power = PD.R*abs(E_OUT_IQ).^2;
 PD_Noise_floor = PD.Var*randn(size(E_OUT_IQ));
@@ -296,8 +296,8 @@ PD_Signal = PD_Power;           % TEST 2: Average Power
 % PD_Signal = PD_Power + PD_Noise_floor; % Photodetector Signal
 PD_Spectrum = abs(fftshift(fft(PD_Signal)));
 
-figure, plot(time, 10*log10(PD_Signal)), xlabel('Samples')
-title('Photodectector Received Signal')
+% figure, plot(time, 10*log10(PD_Signal)), xlabel('Samples')
+% title('Photodectector Received Signal')
 
 figure,plot(frequency, 10*log10(PD_Spectrum),'r')
 xlabel('Frequency'), ylabel('Power Spectral Density')
@@ -311,7 +311,7 @@ paramFilt.order = 1;
 paramFilt.gain = 1;
 paramFilt.plot_flag = false;
 
-PD_Signal = custom_filter(PD_Signal, paramFilt);
+PD_Signal = custom_filter(PD_Signal, paramFilt) + PD_Noise_floor;
 Spectrum_PD_Signal = abs(fftshift(fft(PD_Signal)));
 
 figure,plot(time,PD_Signal)
