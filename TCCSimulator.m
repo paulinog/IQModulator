@@ -62,6 +62,12 @@ for i=0:(SamplePerSymbol-1)
     Signal_Q = Signal_Q + circshift(PRBS_Q,[0 i]);
 end
 
+figure,
+subplot(211),plot(time,Signal_I)
+title('Signal I'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
+subplot(212),plot(time,Signal_Q)
+title('Signal Q'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
+
 figure('Position',[618 412 300 280]),
 plot(Signal_I, Signal_Q, 'o-' ), xlabel('Signal I'), ylabel('Signal Q')
 title('QPSK Generated Signal (Normalized)')
@@ -71,13 +77,6 @@ title('QPSK Generated Signal (Normalized)')
 %
 % $$ TF_{BW}(f) = \exp(-\log(\sqrt{2})(\frac{f}{0.75*2})^2) $$
 %
-
-figure,
-subplot(211),plot(time,Signal_I)
-title('Signal I'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
-subplot(212),plot(time,Signal_Q)
-title('Signal Q'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
-
 if false
     paramRF.SampleRate = SampleRate/4;
     paramRF.BW = 0.75*SymbolRate;
@@ -286,13 +285,13 @@ axis([-1.5 1.5 -1.5 1.5])
 % end
 
 %% Photodetector - Average optical power
-PD.Var = 10^(-50/10); % -90 dB of Noise floor
+PD.Var = 10^(-60/10); % -50 dB of Noise floor
 PD.R = 0.95;     % Responsivity
 PD_Power = PD.R*abs(E_OUT_IQ).^2;
 PD_Noise_floor = PD.Var*randn(size(E_OUT_IQ));
 
-figure,plot(frequency, 10*log10(abs(fftshift(fft(PD_Noise_floor)))))
-title('PD Noise Floor'), ylabel('Noise Power Spectral Density'), xlabel('Frequency')
+% figure,plot(frequency, 10*log10(abs(fftshift(fft(PD_Noise_floor)))))
+% title('PD Noise Floor'), ylabel('Noise Power Spectral Density'), xlabel('Frequency')
 
 % PD_Signal = E_OUT_IQ;           % TEST 1: Entry Signal
 PD_Signal = PD_Power;           % TEST 2: Average Power
@@ -307,7 +306,7 @@ figure,plot(frequency, 10*log10(PD_Spectrum),'r')
 xlabel('Frequency'), ylabel('Power Spectral Density')
 title('Spectrum of Photodectector Received Signal'), axis([0 1e4 -10 inf])
 
-%% Heaater Transfer Function
+%% Heater Transfer Function
 paramFilt.SampleRate = SampleRate;
 paramFilt.BW = 1e4;
 paramFilt.freq_central = 0;
@@ -317,40 +316,15 @@ paramFilt.plot_flag = false;
 
 PD_Signal = custom_filter(PD_Signal, paramFilt) + PD_Noise_floor;
 Spectrum_PD_Signal = abs(fftshift(fft(PD_Signal)));
+figure('Position',[384 442 800 320]),
+subplot(121),plot(time,PD_Signal)
+title('Photodectector Received Signal'), xlabel('Samples')
+subplot(122),plot(frequency,10*log10(Spectrum_PD_Signal),'k')
+title('Photodectector Received Signal'), axis([0 2e4 -60 Inf])
+xlabel('Frequency'), ylabel('Power Spectral Density')
 
-figure,plot(time,PD_Signal)
-figure,plot(frequency,10*log10(Spectrum_PD_Signal),'k')
-title('Heater Transfer Function'), axis([0 2e4 -60 Inf])
-
-%%
-paramFilt.SampleRate = SampleRate;
-paramFilt.BW = 1e3;
-paramFilt.freq_central = f_I;
-paramFilt.order = 2;
-paramFilt.gain = 1;
-paramFilt.plot_flag = false;
-
-FilteredToneI = custom_filter(PD_Signal, paramFilt);
-Spectrum_FilteredToneI = abs(fftshift(fft(FilteredToneI)));
-
-figure,plot(time,FilteredToneI)
-figure,plot(frequency,10*log10(Spectrum_FilteredToneI),'k')
-title('Spectrum of the Filtered Pilot tone I'), axis([0 1e4 -60 Inf])
-
-%%
-paramFilt.SampleRate = SampleRate;
-paramFilt.BW = 1e3;
-paramFilt.freq_central = f_Q;
-paramFilt.order = 2;
-paramFilt.gain = 1;
-paramFilt.plot_flag = false;
-
-FilteredToneQ = custom_filter(PD_Signal, paramFilt);
-Spectrum_FilteredToneQ = abs(fftshift(fft(FilteredToneQ)));
-
-figure,plot(time,FilteredToneQ)
-figure,plot(frequency,10*log10(Spectrum_FilteredToneQ),'k')
-title('Spectrum of the Filtered Pilot tone Q'), axis([0 1e4 -60 Inf])
+%% Pilot Tone Filters
+plot_pilot_tones
 
 %% SWEEP
 %
