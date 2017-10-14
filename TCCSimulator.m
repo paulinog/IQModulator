@@ -164,47 +164,6 @@ mzm1 = @(E_in, RF, tone, bias, Vpi) E_in * (cos((RF + tone + bias) * pi/(2*Vpi))
 mzm2 = @(E_in, RF, tone, bias, Vpi, ER) E_in * (cos((RF + tone + bias) * pi/(2*Vpi)) + ...
     1i*sqrt(1/ER)*sin((RF + tone + bias)*pi/(2*Vpi)));
 
-%%
-
-% %% Model 3
-% % Single ended RF; single drive bias; different Vpi for RF and bias;
-% % ER infinite
-% %
-% % $$ E_{OUT} =
-% %   E_{IN} 0.5 \{ \exp(\frac{i \pi RF }{2 V_{\pi,RF}}) +
-% %   \exp(\frac{-i \pi RF }{2 V_{\pi,RF}}) \exp[(bias+tone)
-% %   \frac{i \pi}{V_{\pi,bias}}]\} $$
-% %
-% % $$V_{\pi,bias} \approx V_{\pi}$$
-% %
-% % $$V_{\pi,RF} \approx V_{\pi}$$
-% 
-% % mzm3 = @(E_in, RF, tone, bias, Vpi) E_in * 0.5 * ( exp((1i*RF*pi)/(2*Vpi)) + ...
-% %     exp((-1i*RF*pi)/(2*Vpi)).*exp((1i*(bias+tone)*pi)/Vpi) );
-% 
-% mzm3 = @(E_in, RF, tone, bias, Vpi) E_in * 0.5 * ( exp((1i*RF*pi)/(2*Vpi)) + ...
-%     exp((-1i*pi*(RF + 2*(bias + tone)))/(2*Vpi)) );
-% 
-% %% Model 4
-% % Single ended RF; single drive bias; different Vpi for RF and bias;
-% % ER finite
-% %
-% % $$k = 0.5 + \frac{1}{2 \sqrt{ER}}$$
-% %
-% % $$E_{OUT} =
-% %   E_{IN} k \exp( \frac{i \pi RF }{2 V_{\pi,RF}}) + E_{IN} (1-k)
-% %   \exp( \frac{-i \pi RF}{2 V_{\pi,RF}} )
-% %   \exp( \frac{i \pi (bias+tone)}{V_{\pi,bias}} )$$
-% %
-% % $$V_{\pi,bias} \approx V_{\pi}$$
-% %
-% % $$V_{\pi,RF} \approx V_{\pi}$$
-% 
-% k = @(ER) 0.5 + 1/(2*sqrt(ER));
-% 
-% mzm4 = @(E_in, RF, tone, bias, Vpi, ER) E_in*k(ER)*exp((1i*RF*pi)/(2*Vpi)) + ...
-%     E_in*(1-k(ER))*exp(-(1i*RF*pi)/(2*Vpi)) .* exp((1i*(bias+tone)*pi)/Vpi);
-
 %% Quadrature Function
 % $$ E_{out,Q} = E_{out} \exp[(bias.P + tone.P)\frac{i \pi}{V_{\pi,P}}] $$
 
