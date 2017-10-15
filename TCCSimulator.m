@@ -5,7 +5,7 @@
 %
 % University of Campinas, UNICAMP. 2017
 %
-% Version 0.1 (local)
+% Version 1.0
 
 %% Initialization
 close all; clear all;
@@ -137,9 +137,9 @@ mzm2 = @(E_in, RF, tone, bias, Vpi, ER) E_in * (cos((RF + tone + bias) * pi/(2*V
 %% Quadrature Function
 % $$ E_{out,Q} = E_{out} \exp[(bias.P + tone.P)\frac{i \pi}{V_{\pi,P}}] $$
 
-quad = @(E_OUT, bias) exp(1i*((bias + tone.P)*pi)./Vpi.P) .* E_OUT;
+quad = @(E_OUT, bias, tone) exp(1i*((bias + tone)*pi)./Vpi.P) .* E_OUT;
 
-%% QPSK Modulation
+%% QPSK Modulation: Model 1
 E_IN = 1; % Magnitude of the input field
 
 % Bias Voltage Point
@@ -149,7 +149,7 @@ bias.P = 0.5 * Vpi.P;
 
 E_OUT_I = mzm1(E_IN, RF.I, tone.I, bias.I, Vpi.I);
 E_OUT_Q = mzm1(E_IN, RF.Q, tone.Q, bias.Q, Vpi.Q);
-E_OUT_IQ = E_OUT_I + quad(E_OUT_Q, bias.P);
+E_OUT_IQ = E_OUT_I + quad(E_OUT_Q, bias.P, tone.P);
 
 figure('Position',[618 412 300 280]),
 plot(E_OUT_IQ, '.'), xlabel('Real part'), ylabel('Imaginary part')
@@ -172,14 +172,20 @@ title('Higher Extinction Ratio'), ylabel('Polarization phase'), xlabel('E field 
 legend('ER = 30 dB')
 
 %% QPSK Modulation, Model 2
+E_IN = 1; % Magnitude of the input field
+
+% Bias Voltage Point
+bias.I = 1.0   * Vpi.I; % Optimized for QPSK Modulation
+bias.Q = 1.0   * Vpi.Q;
+bias.P = 0.5 * Vpi.P;
+
 ER_I = 10^( 20 /10); % Extinction Ratio, Typ: 30 dB, higher is better
 ER_Q = 10^( 20 /10); %                   Min: 20 dB
 
 E_OUT_I = mzm2(E_IN, RF.I, tone.I, bias.I, Vpi.I, ER_I);
 E_OUT_Q = mzm2(E_IN, RF.Q, tone.Q, bias.Q, Vpi.Q, ER_Q);
 
-bias.P = 0.5 * Vpi.P; % Optimum phase point
-E_OUT_IQ = E_OUT_I + quad(E_OUT_Q, bias.P);
+E_OUT_IQ = E_OUT_I + quad(E_OUT_Q, bias.P, tone.P);
 
 figure('Position',[618 412 300 280]),
 plot(E_OUT_IQ, '.'), xlabel('Real part'), ylabel('Imaginary part')
@@ -213,7 +219,10 @@ xlabel('Frequency'), ylabel('Power Spectral Density')
 % Where all the Bias points are optimized.
 plot_pilot_tones
 
-%% SWEEP
-%
-SweepPts = 300;
-SweepRangeMax = 3*Vpi.I;
+%% SWEEP Bias Points 
+% 
+sweep_P
+sweep_I
+sweep_Q
+
+%%
