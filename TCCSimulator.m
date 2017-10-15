@@ -68,36 +68,6 @@ figure('Position',[618 412 300 280]),
 plot(Signal_I, Signal_Q, 'o-' ), xlabel('Signal I'), ylabel('Signal Q')
 title('QPSK Generated Signal (Normalized)')
 
-%% BW limitation
-% Transfer function for the filter response:
-%
-% $$ TF_{BW}(f) = \exp(-\log(\sqrt{2})(\frac{f}{0.75*2})^2) $$
-%
-% (Not used)
-if false
-    paramRF.SampleRate = SampleRate/4;
-    paramRF.BW = 0.75*SymbolRate;
-    paramRF.freq_central = 0;
-    paramRF.order = 1;
-    paramRF.gain = 1;
-    paramRF.plot_flag = true;
-    Signal_I = custom_filter(Signal_I,paramRF);
-    title('Filtered Signal I'), ylabel('Frequency')
-    Signal_Q = custom_filter(Signal_Q,paramRF);
-    title('Filtered Signal Q'), ylabel('Frequency')
-    
-    figure,
-    subplot(211),plot(time,Signal_I)
-    title('Filtered Signal I'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
-    
-    subplot(212),plot(time,Signal_Q)
-    title('Filtered Signal Q'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
-    
-    figure,
-    plot(Signal_I, Signal_Q, 'o-' ), xlabel('Signal I'), ylabel('Signal Q')
-    title('QPSK Generated Signal (Normalized)')
-end
-
 %% Pilot Tone Generation
 %
 % $$V_{pilot\ tone} = \frac{V_{pp}}{2}V_{\pi}\cos(2 \pi f t + \theta)$$
@@ -231,6 +201,7 @@ paramFilt.gain = 1;
 paramFilt.plot_flag = false;
 PD_Signal = custom_filter(PD_Power, paramFilt) + PD_Noise_floor;
 Spectrum_PD_Signal = abs(fftshift(fft(PD_Signal)));
+
 figure('Position',[384 442 800 320]),
 subplot(121),plot(time,PD_Signal)
 title('Photodectector Received Signal'), xlabel('Samples')
@@ -238,8 +209,8 @@ subplot(122),plot(frequency,10*log10(Spectrum_PD_Signal),'k')
 title('Photodectector Received Signal'), axis([0 2e4 -60 Inf])
 xlabel('Frequency'), ylabel('Power Spectral Density')
 
-%% Pilot Tone Filters
-% Ideal case, where all the Bias points are optimized.
+%% Pilot Tone: Ideal case
+% Where all the Bias points are optimized.
 plot_pilot_tones
 
 %% SWEEP
