@@ -140,7 +140,8 @@ mzm2 = @(E_in, RF, tone, bias, Vpi, ER) E_in * (cos((RF + tone + bias) * pi/(2*V
 quad = @(E_OUT, bias, tone) exp(1i*((bias + tone)*pi)./Vpi.P) .* E_OUT;
 
 %% QPSK Modulation: Model 1
-E_IN = 1; % Magnitude of the input field
+% RF data and Pilot Tones applied
+E_IN = 1; % Magnitude of the input field, V/m
 
 % Bias Voltage Point
 bias.I = 1.0   * Vpi.I; % Optimized for QPSK Modulation
@@ -172,6 +173,7 @@ title('Higher Extinction Ratio'), ylabel('Polarization phase'), xlabel('E field 
 legend('ER = 30 dB')
 
 %% QPSK Modulation, Model 2
+% RF data and Pilot Tones applied, considering Extinction Ratio
 E_IN = 1; % Magnitude of the input field
 
 % Bias Voltage Point
@@ -219,9 +221,12 @@ xlabel('Frequency'), ylabel('Power Spectral Density')
 % Where all the Bias points are optimized.
 plot_pilot_tones
 
-%% SWEEP Bias Points 
-% 
+%% SWEEP Bias Points P/I/Q
+%% Sweep Quadrature Phase of QPSK Map
 sweep_P
+plot_sweep_phase
+
+%% Sweep IQ
 sweep_I
 sweep_Q
 
