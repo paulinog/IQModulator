@@ -1,7 +1,7 @@
 %% IQ Modulator Bias Control - Simulator
 % Guilherme Paulino
 %
-% Trabalho de Conclusão de Curso (Final Design)
+% Final Design (TCC)
 %
 % University of Campinas, UNICAMP. 2017
 %
@@ -60,9 +60,9 @@ end
 
 figure,
 subplot(211),plot(time,Signal_I)
-title('Signal I'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
+title('Signal I'), ylabel('Samples'), axis([0 1e2/SymbolRate -1.1 1.1])
 subplot(212),plot(time,Signal_Q)
-title('Signal Q'), ylabel('Samples'), axis([0 1e-4 -1.1 1.1])
+title('Signal Q'), ylabel('Samples'), axis([0 1e2/SymbolRate -1.1 1.1])
 
 figure('Position',[618 412 300 280]),
 plot(Signal_I, Signal_Q, 'o-' ), xlabel('Signal I'), ylabel('Signal Q')
@@ -224,10 +224,13 @@ plot_pilot_tones
 %% SWEEP Bias Points P/I/Q
 %% Sweep Quadrature Phase of QPSK Map
 sweep_P
-plot_sweep_phase
+plot_sweep_phase_qpsk_map
 
 %% Sweep IQ
 sweep_I
 sweep_Q
+
+plot_quad_IQ
+plot_quad_IQ_beating
 
 %%

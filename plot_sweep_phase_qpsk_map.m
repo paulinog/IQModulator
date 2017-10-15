@@ -1,7 +1,7 @@
 %% Plot Sweep Phase
 % Optimum bias point for phase is 0.5Vpi, which means in-quadrature point
 %
-% RF data or Pilot Tones were not applied
+% Pilot Tones were not applied
 bias.I = 1.0 * Vpi.I; % Optimized for QPSK Modulation
 bias.Q = 1.0 * Vpi.Q;
 E_OUT_I = mzm1(E_IN, RF.I, 0, bias.I, Vpi.I);
